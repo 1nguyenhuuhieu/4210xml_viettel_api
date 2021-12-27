@@ -27,6 +27,7 @@ share/python-wheels/
 *.egg
 *.xml
 *.XML
+*.txt
 MANIFEST
 
 # PyInstaller
