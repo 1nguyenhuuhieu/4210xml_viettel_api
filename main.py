@@ -3,8 +3,12 @@ import requests
 
 from pathlib import Path
 import os
+import sys
+import time 
+from tqdm import tqdm
 
 import datetime
+import shutil
 config = configparser.ConfigParser()
 config.read('config.conf')
 
@@ -16,7 +20,6 @@ data_get_token = {
     'username': user,
     'password': pwd
 }
-
 
 get_token_url = config['URL']['LoginURL']
 upload_xml_url = config['URL']['UploadURL']
@@ -48,15 +51,12 @@ def get_token_request(url, data):
     else:
         return False
 
-
 def write_log(data):
     timestamp = datetime.datetime.now()
     timestamp = '{:%b_%d_%Y}'.format(timestamp)
     file_path = log_directory + "/" + timestamp + '.txt'
     log_file = open(file_path, 'a+')
-    log_file.write(data + "/n")
-
-
+    log_file.write(data + ", \n")
 
 def uploadxml_request(url, token, file_path):
     authorization = "Bearer " + token
@@ -70,20 +70,21 @@ def uploadxml_request(url, token, file_path):
     response = requests.post(url, files=files, headers=headers)
     file.close()
     write_log(response.text)
-    print(response.status_code)
-    if response.status_code == 200:
-        os.remove(file_path)
-    else:
-        print('RRR')
+    os.remove(file_path)
+        
+
 
 access_token = get_token_request(get_token_url, data_get_token )
 
-
-rename_files_directory(directory_upload)
-
 def uploadxml_Directory(directory):
-    for filename in os.listdir(directory):
+    for filename in tqdm(os.listdir(directory)):
         file_path = directory + '/' + filename
         uploadxml_request(upload_xml_url, access_token, file_path)
 
-uploadxml_Directory(directory_upload)
+
+
+while True:
+    rename_files_directory(directory_upload)
+    uploadxml_Directory(directory_upload)
+    time.sleep(60)
+
