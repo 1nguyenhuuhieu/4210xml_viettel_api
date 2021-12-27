@@ -54,19 +54,21 @@ def write_log(data):
     timestamp = '{:%b_%d_%Y}'.format(timestamp)
     file_path = log_directory + "/" + timestamp + '.txt'
     log_file = open(file_path, 'a+')
-    log_file.write(data)
+    log_file.write(data + "/n")
 
 
 
 def uploadxml_request(url, token, file_path):
     authorization = "Bearer " + token
-    files = {'file': open(file_path, 'rb')}
+    file = open(file_path, 'rb')
+    files = {'file': file}
     headers = {
         "Content-Type": "multipart/form-data",
         "Authorization": authorization
     }
 
     response = requests.post(url, files=files, headers=headers)
+    file.close()
     write_log(response.text)
     print(response.status_code)
     if response.status_code == 200:
