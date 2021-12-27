@@ -84,7 +84,11 @@ def uploadxml_Directory(directory):
 
 
 while True:
-    rename_files_directory(directory_upload)
-    uploadxml_Directory(directory_upload)
+    try:
+        rename_files_directory(directory_upload)
+        uploadxml_Directory(directory_upload)
+    except:
+        print("An exception occurred")
     time.sleep(60)
+    
 
