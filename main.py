@@ -35,10 +35,10 @@ def rename_files_directory(directory):
 
 
 def get_token_request(url):
-    data = {
-        'username': user,
-        'password': pwd
-    }
+data = {
+    'username': user,
+    'password': pwd
+}
     headers = {
         "Content-Type": "application/json"
     }
